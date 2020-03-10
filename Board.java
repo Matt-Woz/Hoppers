@@ -2,16 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
-public class Board implements ActionListener
-{
+public class Board implements ActionListener {
     Square[] greenFrogs = new Square[5];
     Square[] redFrog = new Square[1];
     boolean redFrogSelected = false;
     boolean greenFrogSelected = false;
+    JButton selectedFrog = new JButton();
 
-    public Board()
-    {
+    public Board() {
         JFrame Hoppers = new JFrame("Hoppers");
         JPanel panel = new JPanel();
         GridLayout Layout = new GridLayout(5, 5);
@@ -23,27 +23,27 @@ public class Board implements ActionListener
         Square Square2 = new Square(2, 1, "Water", this);
         Square Square3 = new Square(3, 1, "LilyPad", this);
         Square Square4 = new Square(4, 1, "Water", this);
-        Square Square5 = new Square(5, 1, "LilyPad",this);
+        Square Square5 = new Square(5, 1, "LilyPad", this);
         Square Square6 = new Square(1, 2, "Water", this);
-        Square Square7 = new Square(2, 2, "GreenFrog",this);
-        Square Square8 = new Square(3, 2, "Water",this);
-        Square Square9 = new Square(4, 2, "GreenFrog",this);
-        Square Square10 = new Square(5, 2, "Water",this);
-        Square Square11 = new Square(1, 3, "LilyPad",this);
-        Square Square12 = new Square(2, 3, "Water",this);
-        Square Square13 = new Square(3, 3, "GreenFrog",this);
-        Square Square14 = new Square(1, 3, "Water",this);
-        Square Square15 = new Square(1, 3, "LilyPad",this);
-        Square Square16 = new Square(1, 3, "Water",this);
-        Square Square17 = new Square(1, 3, "LilyPad",this);
-        Square Square18 = new Square(1, 3, "Water",this);
-        Square Square19 = new Square(1, 3, "LilyPad",this);
-        Square Square20 = new Square(1, 3, "Water",this);
-        Square Square21 = new Square(1, 3, "GreenFrog",this);
-        Square Square22 = new Square(1, 3, "Water",this);
-        Square Square23 = new Square(1, 3, "RedFrog",this);
-        Square Square24 = new Square(1, 3, "Water",this);
-        Square Square25 = new Square(1, 3, "GreenFrog",this);
+        Square Square7 = new Square(2, 2, "GreenFrog", this);
+        Square Square8 = new Square(3, 2, "Water", this);
+        Square Square9 = new Square(4, 2, "GreenFrog", this);
+        Square Square10 = new Square(5, 2, "Water", this);
+        Square Square11 = new Square(1, 3, "LilyPad", this);
+        Square Square12 = new Square(2, 3, "Water", this);
+        Square Square13 = new Square(3, 3, "GreenFrog", this);
+        Square Square14 = new Square(1, 3, "Water", this);
+        Square Square15 = new Square(1, 3, "LilyPad", this);
+        Square Square16 = new Square(1, 3, "Water", this);
+        Square Square17 = new Square(1, 3, "LilyPad", this);
+        Square Square18 = new Square(1, 3, "Water", this);
+        Square Square19 = new Square(1, 3, "LilyPad", this);
+        Square Square20 = new Square(1, 3, "Water", this);
+        Square Square21 = new Square(1, 3, "GreenFrog", this);
+        Square Square22 = new Square(1, 3, "Water", this);
+        Square Square23 = new Square(1, 3, "RedFrog", this);
+        Square Square24 = new Square(1, 3, "Water", this);
+        Square Square25 = new Square(1, 3, "GreenFrog", this);
         Square[] grid = new Square[25];
         grid[0] = Square1;
         grid[1] = Square2;
@@ -84,109 +84,82 @@ public class Board implements ActionListener
         lilyPads[4] = Square15;
         lilyPads[5] = Square17;
         lilyPads[6] = Square19;
-        for(int i = 0; i < 25; i++)
-        {
+        for (int i = 0; i < 25; i++) {
             panel.add(grid[i].getButton());
         }
         Hoppers.setContentPane(panel);
         Hoppers.setVisible(true);
     }
 
-    private boolean redFrogSelected(ActionEvent e, ImageIcon I)
-    {
-         //if (greenFrogSelected == false && redFrogSelected == false)
-        {
-            if (e.getSource() == redFrog[0].getButton())
-            {
-                redFrog[0].getButton().setIcon(I);
-                redFrogSelected = true;
-                System.out.println("redFrogSelected = true");
-            }
-            else
-            {
-                redFrogSelected = false;
-            }
+    private boolean redFrogSelected(ImageIcon I) {
+        if (greenFrogSelected == true) {
+            greenFrogUnselected();
         }
+        redFrog[0].getButton().setIcon(I);
+        redFrogSelected = true;
+        System.out.println("redFrogSelected = true");
         return redFrogSelected;
     }
 
-    private boolean redFrogUnselected(ActionEvent e, ImageIcon C)
-    {
-        if (greenFrogSelected == true || redFrogSelected == true)
-        {
-            if (e.getSource() == redFrog[0].getButton())
-            {
-                redFrog[0].getButton().setIcon(C);
-                redFrogSelected = false;
-                System.out.println("redFrogSelected = false");
-            }
-        }
-        return redFrogSelected;
+    private void redFrogUnselected() {
+        ImageIcon C = new ImageIcon("RedFrog.png");
+        redFrogSelected = false;
+        redFrog[0].getButton().setIcon(C);
+        System.out.println("redFrogSelected = false");
     }
 
-    private boolean greenFrogSelected(ActionEvent e, ImageIcon A)
+    private boolean greenFrogSelected(ImageIcon A, ActionEvent e)
     {
-        for(int i = 0; i < 5; i++)
+        if (redFrogSelected == true || greenFrogSelected == true) {
+            redFrogUnselected();
+            greenFrogUnselected();
+        }
+        for (int x = 0; x < 5; x++)
         {
-            //if (redFrogSelected == false && greenFrogSelected == false)
+            if (e.getSource() == greenFrogs[x].getButton())
             {
-                if (e.getSource() == greenFrogs[i].getButton())
-                {
-                    greenFrogs[i].getButton().setIcon(A);
-                    greenFrogSelected = true;
-                    System.out.println("greenFrogSelected = true");
-                }
-                else
-                {
-                    greenFrogSelected = false;
-                }
+                selectedFrog = (JButton) e.getSource();
             }
         }
+
+        selectedFrog.setIcon(A);
+        greenFrogSelected = true;
+        System.out.println("greenFrogSelected = true");
         return greenFrogSelected;
     }
-    private boolean greenFrogUnselected(ActionEvent e, ImageIcon B)
+    private void greenFrogUnselected()
     {
-        for(int p = 0; p < 5; p++)
+        ImageIcon B = new ImageIcon("GreenFrog.png");
             {
-                if (e.getSource() == greenFrogs[p].getButton())
-                {
-                    greenFrogs[p].getButton().setIcon(B);
-                    greenFrogSelected = false;
-                    System.out.println("greenFrogSelected = false");
-                }
+                selectedFrog.setIcon(B);
+                greenFrogSelected = false;
+                System.out.println("i hate my life ");
             }
-            return greenFrogSelected;
     }
 
     public void actionPerformed(ActionEvent e)
     {
         ImageIcon I=new ImageIcon("RedFrog2.png");
         ImageIcon A = new ImageIcon("GreenFrog2.png");
-        ImageIcon B = new ImageIcon("GreenFrog.png");
-        ImageIcon C = new ImageIcon("RedFrog.png");
         JButton button=(JButton)e.getSource();
-        if (greenFrogSelected(e, A) == false && redFrogSelected(e, I) == false)
+        for (int i = 0; i<5; i++)
         {
-            //System.out.println("Lol");
-            //redFrogSelected(e, I);
-            greenFrogSelected(e, A);
+            if (e.getSource() == greenFrogs[i].getButton())
+            {
+                greenFrogSelected = true;
+            }
         }
-        else if (greenFrogSelected(e, A) == false && redFrogSelected(e, I) == true)
+        if (e.getSource() == redFrog[0].getButton())
         {
-            greenFrogSelected(e, A);
+            redFrogSelected(I);
         }
-        else if (greenFrogSelected(e, A) == true && redFrogSelected(e, I) == false)
+        else if (greenFrogSelected == true)
         {
-            redFrogSelected(e, I);
+            greenFrogSelected(A, e);
         }
-        //else if (greenFrogSelected(e, A) == true && redFrogSelected(e, I))
-        //else if (greenFrogSelected(e, A) == true || redFrogSelected(e, I) == true)
-        {
-            //redFrogUnselected(e, C);
-            //greenFrogUnselected(e, B);
+
         }
 
        
 
     }
-}
