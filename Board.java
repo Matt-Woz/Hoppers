@@ -92,6 +92,72 @@ public class Board implements ActionListener
         Hoppers.setVisible(true);
     }
 
+    private boolean redFrogSelected(ActionEvent e, ImageIcon I)
+    {
+         //if (greenFrogSelected == false && redFrogSelected == false)
+        {
+            if (e.getSource() == redFrog[0].getButton())
+            {
+                redFrog[0].getButton().setIcon(I);
+                redFrogSelected = true;
+                System.out.println("redFrogSelected = true");
+            }
+            else
+            {
+                redFrogSelected = false;
+            }
+        }
+        return redFrogSelected;
+    }
+
+    private boolean redFrogUnselected(ActionEvent e, ImageIcon C)
+    {
+        if (greenFrogSelected == true || redFrogSelected == true)
+        {
+            if (e.getSource() == redFrog[0].getButton())
+            {
+                redFrog[0].getButton().setIcon(C);
+                redFrogSelected = false;
+                System.out.println("redFrogSelected = false");
+            }
+        }
+        return redFrogSelected;
+    }
+
+    private boolean greenFrogSelected(ActionEvent e, ImageIcon A)
+    {
+        for(int i = 0; i < 5; i++)
+        {
+            //if (redFrogSelected == false && greenFrogSelected == false)
+            {
+                if (e.getSource() == greenFrogs[i].getButton())
+                {
+                    greenFrogs[i].getButton().setIcon(A);
+                    greenFrogSelected = true;
+                    System.out.println("greenFrogSelected = true");
+                }
+                else
+                {
+                    greenFrogSelected = false;
+                }
+            }
+        }
+        return greenFrogSelected;
+    }
+    private boolean greenFrogUnselected(ActionEvent e, ImageIcon B)
+    {
+        for(int p = 0; p < 5; p++)
+            {
+                if (e.getSource() == greenFrogs[p].getButton())
+                {
+                    greenFrogs[p].getButton().setIcon(B);
+                    greenFrogSelected = false;
+                    System.out.println("greenFrogSelected = false");
+                }
+            }
+            return greenFrogSelected;
+    }
+
     public void actionPerformed(ActionEvent e)
     {
         ImageIcon I=new ImageIcon("RedFrog2.png");
@@ -99,45 +165,28 @@ public class Board implements ActionListener
         ImageIcon B = new ImageIcon("GreenFrog.png");
         ImageIcon C = new ImageIcon("RedFrog.png");
         JButton button=(JButton)e.getSource();
-        if (greenFrogSelected == false && redFrogSelected == false)
+        if (greenFrogSelected(e, A) == false && redFrogSelected(e, I) == false)
         {
-            if (e.getSource() == redFrog[0].Button)
-            {
-                button.setIcon(I);
-                redFrogSelected = true;
-                System.out.println("i hate everything");
-            }
+            //System.out.println("Lol");
+            //redFrogSelected(e, I);
+            greenFrogSelected(e, A);
         }
-        for(int i = 0; i < 5; i++)
+        else if (greenFrogSelected(e, A) == false && redFrogSelected(e, I) == true)
         {
-            if (redFrogSelected == false && greenFrogSelected == false)
-            {
-                if (e.getSource() == greenFrogs[i].Button)
-                {
-                    button.setIcon(A);
-                    greenFrogSelected = true;
-                    System.out.println("Hello");
-                }
-            }
+            greenFrogSelected(e, A);
         }
-        if (greenFrogSelected == true || redFrogSelected == true)
+        else if (greenFrogSelected(e, A) == true && redFrogSelected(e, I) == false)
         {
-            if (e.getSource() == redFrog[0].Button)
-            {
-                button.setIcon(C);
-                redFrogSelected = false;
-                System.out.println("Strange");
-            }
-            for(int p = 0; p < 5; p++)
-            {
-                if (e.getSource() == greenFrogs[p].Button)
-                {
-                    button.setIcon(B);
-                    greenFrogSelected = false;
-                    System.out.println("Bruh");
-                }
-            }
+            redFrogSelected(e, I);
         }
+        //else if (greenFrogSelected(e, A) == true && redFrogSelected(e, I))
+        //else if (greenFrogSelected(e, A) == true || redFrogSelected(e, I) == true)
+        {
+            //redFrogUnselected(e, C);
+            //greenFrogUnselected(e, B);
+        }
+
+       
 
     }
 }

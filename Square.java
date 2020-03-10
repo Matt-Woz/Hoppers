@@ -5,12 +5,12 @@ import java.awt.event.ActionListener;
 public class Square
 {
     private int x,y;
-    public JButton Button;
+    private JButton Button;
 
-    public JButton getButton() {
+    public JButton getButton() 
+    {
         return Button;
     }
-
     public Square(int x, int y, String image, Board board) {
         this.x = x;
         this.y = y;
@@ -25,4 +25,5 @@ public class Square
         ImageIcon I = new ImageIcon(image+".png");
         Button.setIcon(I);
     }
+    
 }
