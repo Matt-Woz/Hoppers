@@ -25,5 +25,12 @@ public class Square
         ImageIcon I = new ImageIcon(image+".png");
         Button.setIcon(I);
     }
-    
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

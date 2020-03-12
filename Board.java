@@ -2,14 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.TimeUnit;
 
 public class Board implements ActionListener {
     Square[] greenFrogs = new Square[5];
     Square[] redFrog = new Square[1];
+    Square[] lilyPads = new Square[13];
     boolean redFrogSelected = false;
     boolean greenFrogSelected = false;
+    boolean lilyPadSelected = false;
     JButton selectedFrog = new JButton();
+    JButton selectedLilyPad = new JButton();
+    int lilyPadCount = 7;
 
     public Board() {
         JFrame Hoppers = new JFrame("Hoppers");
@@ -76,7 +79,6 @@ public class Board implements ActionListener {
         greenFrogs[3] = Square21;
         greenFrogs[4] = Square25;
         redFrog[0] = Square23;
-        Square[] lilyPads = new Square[13];
         lilyPads[0] = Square1;
         lilyPads[1] = Square3;
         lilyPads[2] = Square5;
@@ -97,7 +99,6 @@ public class Board implements ActionListener {
         }
         redFrog[0].getButton().setIcon(I);
         redFrogSelected = true;
-        System.out.println("redFrogSelected = true");
         return redFrogSelected;
     }
 
@@ -105,49 +106,117 @@ public class Board implements ActionListener {
         ImageIcon C = new ImageIcon("RedFrog.png");
         redFrogSelected = false;
         redFrog[0].getButton().setIcon(C);
-        System.out.println("redFrogSelected = false");
     }
 
-    private boolean greenFrogSelected(ImageIcon A, ActionEvent e)
-    {
-        if (redFrogSelected == true || greenFrogSelected == true) {
+    private boolean greenFrogSelected(ImageIcon A, ActionEvent e) {
+        JButton button = (JButton) e.getSource();
+
+
+        if (redFrogSelected == true) {
             redFrogUnselected();
+        }
+
+       else  if (selectedFrog != button) {
             greenFrogUnselected();
         }
-        for (int x = 0; x < 5; x++)
-        {
-            if (e.getSource() == greenFrogs[x].getButton())
-            {
-                selectedFrog = (JButton) e.getSource();
+
+        for (int x = 0; x < greenFrogs.length; x++) {
+            if (button == greenFrogs[x].getButton()) {
+                selectedFrog = button;
             }
         }
-
         selectedFrog.setIcon(A);
         greenFrogSelected = true;
-        System.out.println("greenFrogSelected = true");
         return greenFrogSelected;
     }
+
     private void greenFrogUnselected()
     {
         ImageIcon B = new ImageIcon("GreenFrog.png");
-            {
-                selectedFrog.setIcon(B);
-                greenFrogSelected = false;
-                System.out.println("i hate my life ");
-            }
+        selectedFrog.setIcon(B);
+        greenFrogSelected = false;
+
     }
 
-    public void actionPerformed(ActionEvent e)
+    private boolean lilyPadClicked(ActionEvent e)
     {
-        ImageIcon I=new ImageIcon("RedFrog2.png");
-        ImageIcon A = new ImageIcon("GreenFrog2.png");
-        JButton button=(JButton)e.getSource();
-        for (int i = 0; i<5; i++)
+        if(redFrogSelected == true || greenFrogSelected == true)
         {
-            if (e.getSource() == greenFrogs[i].getButton())
+            for (int i=0; i<7; i++)
             {
+                if (e.getSource() == lilyPads[i].getButton())
+                {
+                    selectedLilyPad = (JButton) e.getSource();
+                    i = 7;
+                }
+            }
+            lilyPadSelected = true;
+        }
+        return lilyPadSelected;
+    }
+
+    private void greenMoveTo(ActionEvent e)
+    {
+        JButton button = (JButton) e.getSource();
+        int x = 0;
+        int y = 0;
+
+        while(button != lilyPads[x].getButton())
+        {
+            x++;
+        }
+
+        while (selectedFrog != greenFrogs[y].getButton())
+        {
+            y++;
+        }
+
+        ImageIcon B = new ImageIcon("GreenFrog.png");
+        ImageIcon C = new ImageIcon("LilyPad.png");
+        JButton reset = new JButton();
+        lilyPads[x].getButton().setIcon(B);
+        greenFrogs[y].getButton().setIcon(C);
+        Square tempGreenFrog = greenFrogs[y];
+        greenFrogs[y] = lilyPads[x];
+        lilyPads[x] = tempGreenFrog;
+        greenFrogSelected = false;
+        lilyPadSelected = false;
+        redFrogSelected = false;
+        selectedFrog = reset;
+    }
+
+   private void redMoveTo()
+   {
+       int x = 0;
+       while(selectedLilyPad != lilyPads[x].getButton())
+       {
+           x++;
+       }
+       ImageIcon C = new ImageIcon("RedFrog.png");
+       ImageIcon D = new ImageIcon("LilyPad.png");
+       redFrog[0].getButton().setIcon(D);
+       selectedLilyPad.setIcon(C);
+       Square tempRedFrog = redFrog[0];
+       redFrog[0] = lilyPads[x];
+       lilyPads[x] = tempRedFrog;
+       redFrogSelected = false;
+       lilyPadSelected = false;
+       greenFrogSelected = false;
+   }
+    public void actionPerformed(ActionEvent e) {
+        ImageIcon I = new ImageIcon("RedFrog2.png");
+        ImageIcon A = new ImageIcon("GreenFrog2.png");
+        for (int i = 0; i < 5; i++) {
+            if (e.getSource() == greenFrogs[i].getButton()) {
                 greenFrogSelected = true;
             }
+        }
+        for (int x = 0; x < lilyPadCount; x++) {
+            if (e.getSource() == lilyPads[x].getButton()) {
+                lilyPadSelected = true;
+            }
+
+
         }
         if (e.getSource() == redFrog[0].getButton())
         {
@@ -157,9 +226,18 @@ public class Board implements ActionListener {
         {
             greenFrogSelected(A, e);
         }
-
+        else if (lilyPadSelected == true)
+        {
+            lilyPadClicked(e);
         }
 
-       
 
+        if (greenFrogSelected == true && lilyPadSelected == true)
+        {
+            greenMoveTo(e);
+        }
+        else if (redFrogSelected == true && lilyPadSelected == true) {
+            redMoveTo();
+        }
     }
+}
