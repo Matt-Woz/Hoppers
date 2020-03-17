@@ -2,9 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Board implements ActionListener {
-    Square[] greenFrogs = new Square[5];
+    private ArrayList<Square> greenFrogs = new ArrayList<>();
     Square[] redFrog = new Square[1];
     Square[] lilyPads = new Square[13];
     boolean redFrogSelected = false;
@@ -74,11 +75,11 @@ public class Board implements ActionListener {
         grid[22] = Square23;
         grid[23] = Square24;
         grid[24] = Square25;
-        greenFrogs[0] = Square7;
-        greenFrogs[1] = Square9;
-        greenFrogs[2] = Square13;
-        greenFrogs[3] = Square21;
-        greenFrogs[4] = Square25;
+        greenFrogs.add(0, Square7);
+        greenFrogs.add(1, Square9);
+        greenFrogs.add(2, Square13);
+        greenFrogs.add(3, Square21);
+        greenFrogs.add(4, Square25);
         redFrog[0] = Square23;
         lilyPads[0] = Square1;
         lilyPads[1] = Square3;
@@ -142,7 +143,7 @@ public class Board implements ActionListener {
     {
         if(redFrogSelected || greenFrogSelected)
         {
-            for (int i=0; i<7; i++)
+            for (int i=0; i<lilyPadCount; i++)
             {
                 if (e.getSource() == lilyPads[i].getButton())
                 {
@@ -165,7 +166,7 @@ public class Board implements ActionListener {
             x++;
         }
 
-        while (selectedFrog != greenFrogs[y].getButton())
+        while (selectedFrog != greenFrogs.get(y).getButton())
         {
             y++;
         }
@@ -174,9 +175,9 @@ public class Board implements ActionListener {
         ImageIcon C = new ImageIcon("LilyPad.png");
         JButton reset = new JButton();
         lilyPads[x].getButton().setIcon(B);
-        greenFrogs[y].getButton().setIcon(C);
-        Square tempGreenFrog = greenFrogs[y];
-        greenFrogs[y] = lilyPads[x];
+        greenFrogs.get(y).getButton().setIcon(C);
+        Square tempGreenFrog = greenFrogs.get(y);
+        greenFrogs.set(y, lilyPads[x]);
         lilyPads[x] = tempGreenFrog;
         greenFrogSelected = false;
         lilyPadSelected = false;
@@ -201,9 +202,13 @@ public class Board implements ActionListener {
        redFrogSelected = false;
        lilyPadSelected = false;
        greenFrogSelected = false;
+       if (greenFrogCount == 0)
+       {
+           System.out.println("VICTORY!");
+       }
    }
 
-   private boolean greenLegalMove(ActionEvent e)
+   private boolean greenLegalMove(ActionEvent e,ImageIcon B)
    {
        int z=0;
        int p=0;
@@ -211,51 +216,58 @@ public class Board implements ActionListener {
        while(selectedLilyPad != lilyPads[p].getButton() && p<lilyPadCount)
        {
            p++;
-           System.out.print(p);
        }
-       while(selectedFrog != greenFrogs[z].getButton())
+       while(selectedFrog != greenFrogs.get(z).getButton())
        {
            z++;
        }
-       double avgX = (double)(greenFrogs[z].getX() + lilyPads[p].getX()) / 2;
-       double avgY = (double)(greenFrogs[z].getY() + lilyPads[p].getY()) / 2;
+       double avgX = (double)(greenFrogs.get(z).getX() + lilyPads[p].getX()) / 2;
+       double avgY = (double)(greenFrogs.get(z).getY() + lilyPads[p].getY()) / 2;
        boolean legal = false;
        for (int i = 0; i < greenFrogCount; i++)
        {
-           if (greenFrogs[i].getX() == avgX && greenFrogs[i].getY() == avgY) {
+           if (greenFrogs.get(i).getX() == avgX && greenFrogs.get(i).getY() == avgY) {
                legal = true;
+               greenFrogs.get(i).getButton().setIcon(B);
+               lilyPads[lilyPadCount] = greenFrogs.get(i);
+               lilyPadCount++;
+               greenFrogs.remove(i);
+               greenFrogCount--;
                break;
            }
        }
-       System.out.print(legal);
        return legal;
    }
-   private boolean redLegalMove(ActionEvent e) {
+   private boolean redLegalMove(ActionEvent e, ImageIcon B) {
         int p = 0;
        selectedLilyPad = (JButton) e.getSource();
 
        while(selectedLilyPad != lilyPads[p].getButton() && p<lilyPadCount)
        {
            p++;
-           System.out.print(p);
        }
        double avgX = (double) (redFrog[0].getX() +lilyPads[p].getX()) / 2;
        double avgY = (double) (redFrog[0].getY() + lilyPads[p].getY()) / 2;
        boolean legal = false;
        for (int i = 0; i < greenFrogCount; i++) {
-           if (greenFrogs[i].getX() == avgX && greenFrogs[i].getY() == avgY) {
+           if (greenFrogs.get(i).getX() == avgX && greenFrogs.get(i).getY() == avgY) {
                legal = true;
+               greenFrogs.get(i).getButton().setIcon(B);
+               lilyPads[lilyPadCount] = greenFrogs.get(i);
+               lilyPadCount++;
+               greenFrogs.remove(i);
+               greenFrogCount--;
                break;
            }
            }
-       System.out.print(legal);
        return legal;
        }
     public void actionPerformed(ActionEvent e) {
         ImageIcon I = new ImageIcon("RedFrog2.png");
         ImageIcon A = new ImageIcon("GreenFrog2.png");
-        for (int i = 0; i < 5; i++) {
-            if (e.getSource() == greenFrogs[i].getButton()) {
+        ImageIcon B = new ImageIcon("LilyPad.png");
+        for (int i = 0; i < greenFrogCount; i++) {
+            if (e.getSource() == greenFrogs.get(i).getButton()) {
                 greenFrogSelected = true;
             }
         }
@@ -276,11 +288,11 @@ public class Board implements ActionListener {
         {
             lilyPadClicked(e);
         }
-        if (greenFrogSelected && lilyPadSelected && greenLegalMove(e))
+        if (greenFrogSelected && lilyPadSelected && greenLegalMove(e, B))
         {
                 greenMoveTo(e);
         }
-        else if (redFrogSelected && lilyPadSelected && redLegalMove(e)) {
+        else if (redFrogSelected && lilyPadSelected && redLegalMove(e, B)) {
             redMoveTo();
         }
     }
