@@ -15,6 +15,7 @@ public class Board implements ActionListener {
     JButton selectedLilyPad = new JButton();
     int lilyPadCount = 7;
     int greenFrogCount = 5;
+    Square[] grid = new Square[25];
 
     public Board() {
         JFrame Hoppers = new JFrame("Hoppers");
@@ -49,7 +50,6 @@ public class Board implements ActionListener {
         Square Square23 = new Square(3, 5, "RedFrog", this);
         Square Square24 = new Square(4, 5, "Water", this);
         Square Square25 = new Square(5, 5, "GreenFrog", this);
-        Square[] grid = new Square[25];
         grid[0] = Square1;
         grid[1] = Square2;
         grid[2] = Square3;
@@ -194,6 +194,7 @@ public class Board implements ActionListener {
        }
        ImageIcon C = new ImageIcon("RedFrog.png");
        ImageIcon D = new ImageIcon("LilyPad.png");
+       ImageIcon E = new ImageIcon("Victory.png");
        redFrog[0].getButton().setIcon(D);
        selectedLilyPad.setIcon(C);
        Square tempRedFrog = redFrog[0];
@@ -204,7 +205,10 @@ public class Board implements ActionListener {
        greenFrogSelected = false;
        if (greenFrogCount == 0)
        {
-           System.out.println("VICTORY!");
+           for (int i = 0; i<25; i++)
+           {
+               grid[i].getButton().setIcon(E);
+           }
        }
    }
 
