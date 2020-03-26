@@ -1,4 +1,5 @@
 import javax.swing.*;
+
 public class Square
 {
     private int x,y;
